@@ -1,0 +1,61 @@
+<div style="direction: rtl; font-family: Tahoma, sans-serif; max-width: 500px; margin: 20px auto; padding: 25px; border: 3px solid #007bff; border-radius: 15px; background: #fff; text-align: center;">
+    
+    <h2 style="color: #007bff;">🚀 محول الصور الفوري (عرض الحجم)</h2>
+    
+    <div style="margin-bottom: 20px; border: 2px dashed #ccc; padding: 20px;">
+        <p><b>1. اختر الصورة من جهازك:</b></p>
+        <input type="file" id="fInp" accept="image/*" style="width: 100%;" onchange="
+            var f = this.files[0];
+            if(f) {
+                var s = (f.size / 1024).toFixed(2);
+                document.getElementById('sizeBox').style.display = 'block';
+                document.getElementById('sizeVal').innerText = s + ' كيلوبايت (KB)';
+            }
+        ">
+    </div>
+
+    <div id="sizeBox" style="display: none; background: #e7f3ff; color: #0056b3; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: bold;">
+        📏 حجم الصورة المختار: <span id="sizeVal">0</span>
+    </div>
+
+    <p><b>2. اختر الصيغة المطلوبة:</b></p>
+    <select id="fmt" style="width: 100%; padding: 10px; margin-bottom: 20px;">
+        <option value="image/jpeg">تحويل إلى JPG</option>
+        <option value="image/png">تحويل إلى PNG</option>
+    </select>
+
+    <a href="javascript:void(0);" id="dlLink" style="display: block; background: #28a745; color: white; padding: 20px; text-decoration: none; border-radius: 10px; font-size: 20px; font-weight: bold;" onclick="
+        var inp = document.getElementById('fInp');
+        if(!inp.files[0]) { alert('يا صالح، اختر صورة أولاً!'); return; }
+        
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var img = new Image();
+            img.onload = function() {
+                var canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                var ctx = canvas.getContext('2d');
+                var format = document.getElementById('fmt').value;
+                
+                if(format === 'image/jpeg') {
+                    ctx.fillStyle = '#fff';
+                    ctx.fillRect(0,0,canvas.width,canvas.height);
+                }
+                ctx.drawImage(img, 0, 0);
+                
+                var link = document.createElement('a');
+                link.href = canvas.toDataURL(format, 0.8);
+                link.download = 'converted_by_salh.' + (format === 'image/jpeg' ? 'jpg' : 'png');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(inp.files[0]);
+    ">
+        اضغط هنا للتحويل والتنزيل الآن 📥
+    </a>
+
+</div>
